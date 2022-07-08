@@ -7,8 +7,8 @@ try {
   } catch (error) {
     console.error('Unable to connect to the database:', error);
   }
-app.listen(3000)
-console.log('Server is listening on port', 3000)
+app.listen(4000)
+console.log('Server is listening on port', 4000)
 }
 
 main();
