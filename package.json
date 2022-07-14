@@ -11,6 +11,7 @@
   "author": "Patricia Medina",
   "license": "ISC",
   "dependencies": {
+    "cors": "^2.8.5",
     "dotenv": "^16.0.1",
     "express": "^4.18.1",
     "pg": "^8.7.3",
@@ -18,6 +19,6 @@
     "sequelize": "^6.21.2"
   },
   "devDependencies": {
-    "nodemon": "^2.0.18"
+    "nodemon": "^2.0.19"
   }
 }
