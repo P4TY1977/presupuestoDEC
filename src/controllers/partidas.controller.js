@@ -1,14 +1,14 @@
 import { Partida } from '../models/Partida.js'
 
-export const getPartidas = async (req, res) => {
+export const getPartidas = async (req, res, next) => {
     try {
         const partidas = await Partida.findAll()
         res.json(partidas)
     } catch (error) {
-        return res.status(500).json({ message: error.message })
+        next(error)
     }
 }
-export const getPartida = async (req, res) => {
+export const getPartida = async (req, res, next) => {
     try {
         const { id } = req.params
         const partida = await Partida.findByPk(id)
@@ -16,11 +16,11 @@ export const getPartida = async (req, res) => {
             return res.status(404).json({ message: "La partida solicitada no existe" })
         res.json(partida)        
     } catch (error) {
-        return res.status(500).json({ message: error.message })
+        next(error)
     }
 }
 
-export const getPartidaByClave = async (req, res) => {
+export const getPartidaByClave = async (req, res, next) => {
     try {
         const { clave } = req.params
         const partida = await Partida.findOne({ where: { clave: clave } })
@@ -28,11 +28,11 @@ export const getPartidaByClave = async (req, res) => {
             return res.status(404).json({ message: "La partida solicitada no existe" })
         res.json(partida)        
     } catch (error) {
-        return res.status(500).json({ message: error.message })
+        next(error)
     }
 }
 
-export const addPartida = async (req, res) => {
+export const addPartida = async (req, res, next) => {
     const { clave, descripcion } = req.body
 
     try {
@@ -42,12 +42,12 @@ export const addPartida = async (req, res) => {
         })
         res.json(newPartida)
     } catch (error) {
-        return res.status(500).json({ message: error.message })
+        next(error)
     }
    
 }
 
-export const updatePartida = async (req, res) => {
+export const updatePartida = async (req, res, next) => {
     try {
         const { id } = req.params
         const { clave, descripcion } = req.body
@@ -60,11 +60,11 @@ export const updatePartida = async (req, res) => {
         res.json(partida)
         
     } catch (error) {
-        return res.status(500).json({ message: error.message })
+        next(error)
     }
 }
 
-export const deletePartida = async (req, res) => {
+export const deletePartida = async (req, res, next) => {
     try {
         const { id } = req.params;
         await Partida.destroy({
@@ -74,6 +74,6 @@ export const deletePartida = async (req, res) => {
         })
         res.sendStatus(204)
     } catch (error) {
-        return res.status(500).json({message: error.message})
+        next(error)
     }
 }
