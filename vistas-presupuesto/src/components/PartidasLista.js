@@ -1,12 +1,11 @@
 
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom";
-import React from 'react';
 import PropTypes from 'prop-types';
 import { lighten, makeStyles } from '@material-ui/core/styles';
 import {
     Table, TableBody, TableCell, TableContainer, TableHead, TablePagination,
-    TableRow, TableSortLabel, Toolbar, Typography, Paper, Button, ButtonGroup
+    TableRow, TableSortLabel, Toolbar, Typography, Paper, Button, ButtonGroup, CircularProgress
 } from '@material-ui/core';
 import { createTheme, ThemeProvider } from '@material-ui/core/styles';
 import { esES } from '@material-ui/core/locale';
@@ -150,6 +149,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function PartidasLista() {
     const [partidas, setPartidas] = useState([])
+    const [loading, setLoading] = useState(false)
 
     const navigate = useNavigate()
 
@@ -160,23 +160,25 @@ export default function PartidasLista() {
     }
 
     const handleDelete = async (id) => {
+        setLoading(true)
         try {
             await fetch(`http://localhost:4000/partidas/${id}`, {method: "DELETE"})        
             setPartidas(partidas.filter(partidas => partidas.id !== id))            
         } catch (error) {
             console.log(error)
         }
+        setLoading(false)
     }
 
     useEffect(() => {
         cargarPartidas()
     }, [])
     const classes = useStyles();
-    const [order, setOrder] = React.useState('asc');
-    const [orderBy, setOrderBy] = React.useState('clave');
-    const [page, setPage] = React.useState(0);
+    const [order, setOrder] = useState('asc');
+    const [orderBy, setOrderBy] = useState('clave');
+    const [page, setPage] = useState(0);
 
-    const [rowsPerPage, setRowsPerPage] = React.useState(10);
+    const [rowsPerPage, setRowsPerPage] = useState(10);
 
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
@@ -239,7 +241,7 @@ export default function PartidasLista() {
                                             <TableCell align="left" style={{width:20}}>
                                                 <ButtonGroup disableElevation variant="outlined" color="primary">
                                                     <Button variant='contained' color='inherit' onClick={()=>navigate(`/partidas/${row.id}/editar`)}>Editar</Button>
-                                                    <Button variant='contained' style={{marginLeft: 5, backgroundColor: "darkred", color:'white'}} onClick={()=> handleDelete(row.id)}>Eliminar</Button>
+                                                    <Button variant='contained' style={{marginLeft: 5, backgroundColor: "darkred", color:'white'}} onClick={()=> handleDelete(row.id)}>{loading ? <CircularProgress color='inherit' size={24}></CircularProgress> : 'Eliminar'}</Button>
                                                 </ButtonGroup>
                                             </TableCell>
 
