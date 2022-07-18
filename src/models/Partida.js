@@ -8,10 +8,14 @@ export const Partida = sequelize.define('partida', {
         autoIncrement: true
     },
     clave: {
-        type: DataTypes.INTEGER
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        unique: true
     },
     descripcion: {
-        type: DataTypes.STRING
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true
     }
 },
     {
