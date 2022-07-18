@@ -1,5 +1,7 @@
 import { Card, CardContent, CardHeader, Grid, FormControl,
-     TextField, Button, CircularProgress } from '@material-ui/core'
+     TextField, Button, CircularProgress, Collapse } from '@material-ui/core'
+import { Alert, Box, IconButton } from '@mui/material'
+import CloseIcon from '@mui/icons-material/Close';
 import {useEffect, useState} from 'react'
 import {useNavigate, useParams} from 'react-router-dom'
 
@@ -13,15 +15,19 @@ export default function PartidaForma(){
 
     const [loading, setLoading] = useState(false)
     const [editing, setEditing] = useState(false)
+    const [open, setOpen] = useState(false);
+    const [mensaje, setMensaje] = useState('');
 
     const navigate=useNavigate()
 
     const params = useParams()
+
+    
     
     const handleSubmit= async (e) => {
         e.preventDefault()
         setLoading(true)
-        if(editing){
+        if(editing){            
             await fetch(`http://localhost:4000/partidas/${params.id}`,{
                 method: "PUT",
                 headers: {
@@ -32,11 +38,26 @@ export default function PartidaForma(){
 
         }
         else{
-            await fetch("http://localhost:4000/partidas",{
-            method: "POST",
-            body: JSON.stringify(partida),
-            headers: {"Content-Type": "application/json"},
-        })
+           
+            const res=await fetch("http://localhost:4000/partidas",{
+                method: "POST",
+                body: JSON.stringify(partida),
+                headers: {"Content-Type": "application/json"},
+            })
+            const data = await res.json()
+            //colocar un mensaje para orientar al usuario, se está validando desde sequelize
+    
+            if(data.message)
+            {                
+                setOpen(true)
+                data.message==="llave duplicada viola restricción de unicidad «partidas_descripcion_key»" ?
+                setMensaje('La descripción ya existe') : setMensaje('La clave ya existe')
+                setLoading(false)
+                return
+            }
+            else{
+                setOpen(false)
+            } 
         }
         setLoading(false)
 
@@ -76,6 +97,27 @@ export default function PartidaForma(){
                            </Button>                           
                         </FormControl>
                         </form>
+                        <Box sx={{ width: '100%' }}>
+                            <Collapse in={open}>
+                                <Alert severity='error'
+                                    action={
+                                        <IconButton
+                                            aria-label="close"
+                                            color="inherit"
+                                            size="small"
+                                            onClick={() => {
+                                                setOpen(false);
+                                            }}
+                                        >
+                                            <CloseIcon fontSize="inherit" />
+                                        </IconButton>
+                                    }
+                                    style={{marginTop: 30}}
+                                >
+                                    {mensaje}
+                                </Alert>
+                            </Collapse>
+                        </Box>
                     </CardContent>
                 </Card>
 
