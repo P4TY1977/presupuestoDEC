@@ -28,13 +28,27 @@ export default function PartidaForma(){
         e.preventDefault()
         setLoading(true)
         if(editing){            
-            await fetch(`http://localhost:4000/partidas/${params.id}`,{
+            const res = await fetch(`http://localhost:4000/partidas/${params.id}`,{
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify(partida)
             })
+            const data = await res.json()
+            //colocar un mensaje para orientar al usuario, se está validando desde sequelize
+    
+            if(data.message)
+            {                
+                setOpen(true)
+                data.message==="llave duplicada viola restricción de unicidad «partidas_descripcion_key»" ?
+                setMensaje('La descripción ya existe') : setMensaje('La clave ya existe')
+                setLoading(false)
+                return
+            }
+            else{
+                setOpen(false)
+            } 
 
         }
         else{
