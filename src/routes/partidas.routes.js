@@ -1,11 +1,12 @@
 import { Router } from "express";
 import {getPartidas, addPartida, updatePartida, deletePartida, getPartida, getPartidaByClave} from "../controllers/partidas.controller.js"
+import { verificarToken, isAsistente } from "../middlewares/index.js";
 
 const router = Router()
-router.get('/partidas',getPartidas)
-router.post('/partidas',addPartida)
-router.put('/partidas/:id',updatePartida)
-router.delete('/partidas/:id',deletePartida)
-router.get('/partidas/:id',getPartida)
-router.get('/partidas/clave/:clave',getPartidaByClave)
+router.get('/',getPartidas)
+router.post('/',[verificarToken, isAsistente], addPartida)
+router.put('/:id',[verificarToken, isAsistente],updatePartida)
+router.delete('/:id',[verificarToken, isAsistente],deletePartida)
+router.get('/:id',getPartida)
+router.get('/clave/:clave',getPartidaByClave)
 export default router
